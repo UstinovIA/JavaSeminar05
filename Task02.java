@@ -17,6 +17,8 @@ public class Task02 {
                 "Петр Петин", "Иван Ежов"};
         List<String> listWorkers = new ArrayList<>(List.of(arr));
         List<String> listNames = getNames(listWorkers);
+        System.out.println(listNames.toString());
+        System.out.println(sortNames(listNames));
     }
     static List<String> getNames(List<String> list){
         List<String> result = new ArrayList<>();
@@ -27,11 +29,27 @@ public class Task02 {
         return result;
     }
 
-    static Map<Integer, String> getUniqueNames(List<String> listNames){
-        Map<Integer, String> result = new HashMap<>();
+    static Map<String, Integer> getUniqueNames(List<String> listNames){
+        Map<String, Integer> result = new HashMap<>();
         for(int i=0; i<listNames.size(); i++){
-            if(!result.containsValue(listNames.get(i))){
-                result.put(Collections.frequency(listNames, listNames.get(i)), listNames.get(i));
+            if(!result.containsKey(listNames.get(i))){
+                result.put(listNames.get(i), Collections.frequency(listNames, listNames.get(i)));
+            }
+        }
+        return result;
+    }
+
+    static Map<Integer, List<String>> sortNames(List<String> listNames) {
+        Map<Integer, List<String>> result = new TreeMap<>(Comparator.reverseOrder());
+        Map<String, Integer> uniqueNames = getUniqueNames(listNames);
+        for (Map.Entry<String, Integer> entry: uniqueNames.entrySet()){
+            if(!result.containsKey(entry.getValue())) {
+                List<String> list = new ArrayList<>();
+                list.add(entry.getKey());
+                result.put(entry.getValue(), list);
+            }
+            else {
+                result.get(entry.getValue()).add(entry.getKey());
             }
         }
         return result;
